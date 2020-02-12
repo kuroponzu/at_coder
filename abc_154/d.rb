@@ -1,35 +1,21 @@
-line = readlines.map(&:chomp)
-
-line[0] = line[0].split(" ")
-line[1] = line[1].split(" ")
-
-dice_count = line[0][0].to_i
-choice_count = line[0][1].to_i
-dices = line[1].map(&:to_i)
-
+_, choice_count = gets.chomp.split.map(&:to_i)
+dices = gets.chomp.split.map(&:to_i)
 
 probabilities = []
 
-dices.each do |dice|
-  temp = 0.to_f
-  1.upto(dice) do |i|
-    temp += (i.to_f / dice.to_f).to_f
-    p temp
-  end
-  probabilities << temp
+c_sum = [0]
+
+dices.each.with_index do |dice,i|
+  probabilities << (1 + dice.to_f)/2
+  c_sum[i+1] = c_sum[i] + probabilities[i]
+
 end
 
-max = 0
+v_sum = 0
 
-probabilities.each_cons(choice_count) do |v|
-  v_sum = 0
-  v.each do |a|
-    v_sum += a
-  end
-  p v_sum
-  if v_sum > max
-    max = v_sum
-  end
+0.upto(dices.length - choice_count) do |i|
+  sum = c_sum[i + choice_count] - c_sum[i]
+  v_sum = sum if sum > v_sum
 end
 
-puts max.to_f
+p v_sum.to_f
